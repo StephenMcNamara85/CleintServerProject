@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+
+<head>
+		<html lang="en">
+		<meta charset="UTF-8">
+		<link rel=stylesheet type=text/css href=styleSheet.css>
+		<img src="logo.jpg" alt="logo" class="logo">
+
+		<title>Zucchini Lasagna</title>
+</head>
+
+<body>
+
+<a href="https://en.wikipedia.org/wiki/Lasagne"><h1>Zucchini Lasagna</h1></a>
+
+<h2>Say,"Cheese," because this healthy version of a favorite comfort food will leave you smiling.</h2>
+
+<h3>Ingredients</h3>
+
+						<ul>
+								<li>1/2 lb lasanga noodles, cooked in unsalted water</li>
+<a href="https://en.wikipedia.org/wiki/Mozzarella">								<li>3/4 C part-skim mozzarella cheese,  grated</li>   </a>
+								<li>11/2 C fat free cottage cheese</li>
+								<li>1/4 C Parmesan cheese, grated</li>
+<a href="https://en.wikipedia.org/wiki/Zucchini">								<li>11/2 C raw zucchini, sliced </li>   			  </a>
+								<li>21/2 C no salt added tomato sauce</li>
+								<li>2 tsp basil, dried</li>
+			 					<li>2 tsp oregano, dried</li>
+<a href="https://en.wikipedia.org/wiki/Onion">								<li>1/4 C onion, chopped</li>                             </a>
+								<li>1 clove garlic</li>
+								<li>1/8 tsp black pepper</li>
+						</ul>
+
+
+<h4></h4>
+
+<h4></h4>
+
+<h3>Method<h3>
+		
+					<ol>
+							<li>Preheat oven to 350 °F.  Lightly spray 9- by 13-inch baking dish with vegetable oil spray</li>
+							<li>In small bowl, combine 1/8 cup mozzarella and 1 tablespoon Parmesan cheese.  Set aside.</li>
+							<li>In medium bowl, combine remaining mozzarella and Parmesan cheese with all of the cottage cheese.  Mix well and set aside.</li>
+							<li>Combine tomato sauce with remaining ingredients.  Spread thin layer of tomato sauce in bottom of baking dish.  Add a third
+							of noodles in single layer.  Spread half of cottage cheese mixture on top.  Add layer of zucchini.</li>
+							<li>Repeat layering.  Add thin coating of sauce. Top with noodles, sauce, and reserved cheese mixture. Cover with aluminum foil.</li>
+							<li>Bake for 30–40 minutes.  Cool for 10–15 minutes.  Cut into 6 portions.</li>
+					</ol>
+					
+					
+			<hr>
+                        
+<html>
+<head>
+<title>Querying the Nutritional Database</title>
+</head>
+
+<body>
+<h2>Database Query Form</h2>
+<p>Please enter your request in the following form:</p>
+
+<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
+  Enter Nutritional Query : 
+  <input name="Pet_name" type="text" id="ID_nr"><br><br>
+  <input name="send" type="submit" id="send" value="Execute Query">
+</form>
+
+<hr>
+<h2>Database Query Result</h2><br><br>
+
+
+
+
+<?php
+
+if(isset($_POST['send']))
+{
+
+//
+//Set connection parameters
+//
+
+$dbhost = "fdb25.atspace.me";
+$dbuser = "2990054_litk00232855";
+$dbpass = "k00232855";
+$dbname = "2990054_litk00232855";
+
+//
+//make the connection
+//
+
+$conn=mysqli_connect($dbhost,$dbuser,$dbpass, $dbname, 3306); 
+if (!$conn) 
+	{
+	die("<h2><font color=#FF0000><blink>Error! :</blink></font>".mysql_error()."</h2>");
+	}
+
+
+
+//
+//Define the SQL query to be executed
+//NOTE: Be careful to use quotes around $criteria when embedding it into the SQL query
+//
+
+$criteria = $_POST['Pet_name']; //Get the select criteria from the FORM
+ 
+//$query="SELECT nutritionalinfo.ingredients,nutritionalinfo.calories,nutritionalinfo.carbohydrates,nutritionalinfo.cholesterol, nutritionalinfo.protein, nutritionalinfo.saturatedfat, nutritionalinfo.sodium, nutritionalinfo.totalfat, nutritionalinfo.totalfiber FROM nutritionalinfo where nutritionalinfo.ingredients='$criteria'";
+$query="SELECT * FROM nutritioninfotwo where nutritioninfotwo.dishtype='$criteria'";
+
+
+$result=mysqli_query($conn, $query);   //The query result
+$num=mysqli_num_rows($result);   //The number of rows returned by the query
+
+	if ($criteria!=NULL)
+	{
+	//
+	//A non NULL value is entered as the selection criteria
+	//The QUERY can be processed
+	//
+	
+	if ($result) {
+        $row = mysqli_fetch_row($result);
+       echo "<table border=5>";
+		echo "<tr>";
+		echo '<td>dishtype</td>';
+		echo '<td>calories</td>';
+		echo '<td>carbohydrates</td>';                       
+		echo '<td>cholesterol</td>';
+                echo '<td>protein</td>';
+                echo '<td>saturatedfat</td>';
+                echo '<td>soduim</td>';
+                echo '<td>totalfat</td>';
+                echo '<td>totalfiber</td>';
+		echo '<tr>';
+        while ($row) {
+            $col = count($row);
+            echo "<tr>";
+            for ($c = 0; $c < $col; $c++) {
+                echo "<td>" . $row[$c] . "</td>";
+            }
+            echo "</tr>";
+            $row = mysqli_fetch_row($result);
+        }
+        echo "</table>";
+    } else {
+        echo "err";
+    }
+
+echo "<hr>";
+
+//
+//CLOSE the stored database connection
+//
+
+mysqli_close($conn);
+
+}
+
+else 	
+{
+	//
+	//A NULL value is entered
+	//This means the user has hit the Execute Query button
+	//but has not entered anything into the form
+	//
+	echo 	'<b>Please enter a valid nutritional query in the form above.</b>';
+}
+
+}
+else
+{
+	//
+	//Nothing has been entered yet in the form 
+	//and the button has not yet been pressed
+	//
+	echo 	'<b>No nutritional query entered yet.Please enter your request in the form above.</b>';
+}
+?>
